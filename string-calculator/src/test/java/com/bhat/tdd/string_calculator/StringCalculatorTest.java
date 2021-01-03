@@ -1,6 +1,7 @@
 package com.bhat.tdd.string_calculator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -37,4 +38,15 @@ public class StringCalculatorTest {
 	public void multipleNumbersWithCustomDelimiter() {
 		assertEquals(6, stringCalculator.add("//;\n1;2;3"));
 	}
+	
+	@Test
+	public void exceptionWithNegativeNumbers() {
+		try {
+			stringCalculator.add("-1,-2,3");
+			fail("Exception to be thrown");
+		} catch(RuntimeException exception) {
+			assertEquals("Negatives not allowed - -1,-2", exception.getMessage());
+		}
+	}
+
 }
