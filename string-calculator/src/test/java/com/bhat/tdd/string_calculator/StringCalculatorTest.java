@@ -48,5 +48,29 @@ public class StringCalculatorTest {
 			assertEquals("Negatives not allowed - -1,-2", exception.getMessage());
 		}
 	}
+	
+	@Test
+	public void ignoreNumbersGreaterThan1000() {
+		assertEquals(2, stringCalculator.add("2,1001"));
+	}
+
+	// Below 3 tests not working
+	/**
+	 * @Test
+	public void differentFormatForCustomDelimiters() {
+		assertEquals(6, "//[***]\n1***2***3");
+	}
+	
+	@Test
+	public void multipleCustomDelimiters() {
+		assertEquals(6, "//[*][%]\n1*2%3");
+	}
+	
+	@Test
+	public void multipleCustomDelimitersWithMoreCharacters() {
+		assertEquals(6, "//[**][%%]\n1**2%%3");
+	}
+	 */
+	
 
 }

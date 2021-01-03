@@ -18,8 +18,9 @@ public class StringCalculator {
 		if(numbers.startsWith("//")) {
 			Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(numbers);
 			if (matcher.matches()) {
-				delimiter = matcher.group(1);
+				delimiter = Pattern.quote(matcher.group(1));
 				numbers = matcher.group(2);
+				// System.out.println(delimiter);
 			}
 		}
 		
@@ -55,7 +56,7 @@ public class StringCalculator {
 	private int calculateSum(int[] tokens) {
 		int sum = 0;
 		for(int i=0; i<tokens.length; i++) {
-			sum += tokens[i];
+			sum += tokens[i] > 1000 ? 0 : tokens[i];
 		}
 		return sum;
 	}
