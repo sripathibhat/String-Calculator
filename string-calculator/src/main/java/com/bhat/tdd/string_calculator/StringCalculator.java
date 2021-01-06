@@ -1,6 +1,7 @@
 package com.bhat.tdd.string_calculator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,11 +17,41 @@ public class StringCalculator {
 		
 		// Check for custom delimiters
 		if(numbers.startsWith("//")) {
-			Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(numbers);
-			if (matcher.matches()) {
-				delimiter = Pattern.quote(matcher.group(1));
-				numbers = matcher.group(2);
+			Matcher matcher1 = Pattern.compile("//(.)\n(.*)").matcher(numbers);
+			Matcher matcher2 = Pattern.compile("//\\[(.)\\]\\[(.)\\]\n(.*)").matcher(numbers);
+			Matcher matcher3 = Pattern.compile("//\\[(.*)\\]\\[(.*)\\]\n(.*)").matcher(numbers);
+			Matcher matcher4 = Pattern.compile("//\\[(.*)\\]\n(.*)").matcher(numbers);
+			Matcher matcher5 = Pattern.compile("//(\\[.+\\])\n(.*)").matcher(numbers);
+			if (matcher1.matches()) {
+				System.out.println("Matched 1");
+				delimiter = escapeMetaChars(matcher1.group(1));
+				numbers = matcher1.group(2);
 				// System.out.println(delimiter);
+			}
+//			} else if(matcher2.matches()){
+//				System.out.println("Matched 2");
+//				delimiter = Pattern.quote(matcher2.group(1)) + "|" + Pattern.quote(matcher2.group(2));
+//				numbers = matcher2.group(3);
+//			} else if(matcher3.matches()){
+//				System.out.println("Matched 3 " + matcher3.group(1) + " " +  matcher3.group(2));
+//				delimiter = Pattern.quote(matcher3.group(1)) + "|" + Pattern.quote(matcher3.group(2));
+//				numbers = matcher3.group(3);
+//			} else if(matcher4.matches()){
+//				System.out.println("Matched 4 " + matcher4.group(1));
+//				delimiter = Pattern.quote(matcher4.group(1));
+//				numbers = matcher4.group(2);
+//			}
+			else if(matcher5.matches()) {
+				// System.out.print("Matched 5");
+				List<String> delimiters = parseDelimiters(matcher5.group(1));
+				numbers = matcher5.group(2);
+				delimiter = "";
+				for(int i=0; i<delimiters.size()-1; i++) {
+					// System.out.print(delimiters.get(i) + " ");
+					delimiter += delimiters.get(i) + "|";
+				}
+				delimiter += delimiters.get(delimiters.size()-1);
+				
 			}
 		}
 		
@@ -44,6 +75,11 @@ public class StringCalculator {
 	}
 
 	private int[] splitNumbers(String delimiter, String numbers) {
+		//delimiter = delimiter.replace("\\Q", "");
+		//delimiter = delimiter.replace("\\E", "");
+		//delimiter = delimiter.replace("*", "\\*");
+		System.out.println(delimiter);
+
 		String tokens[] = numbers.split(delimiter);
 		int nums[] = new int[tokens.length];
 		int i = 0;
@@ -69,5 +105,31 @@ public class StringCalculator {
 			}
 		}
 		return nums;
+	}
+	
+	private List<String> parseDelimiters(String text) {
+		List<String> delimiters = new ArrayList();
+		int start = 0;
+		for(int i=0; i<text.length(); i++) {
+			if(text.charAt(i) == '[') {
+				start = i+1;
+			} else if(text.charAt(i) == ']') {
+				String delimiter = escapeMetaChars(text.substring(start, i));
+				delimiters.add(delimiter);
+			}
+		}
+		return delimiters;
+	}
+	
+	private String escapeMetaChars(String s) {
+		StringBuilder sb = new StringBuilder();
+		List<Character> metaChars = Arrays.asList('*', '+', '?', '^', '$');
+		for(int i=0; i<s.length(); i++) {
+			if(metaChars.contains(s.charAt(i))) {
+				sb.append("\\");
+			}
+			sb.append(s.charAt(i));
+		}
+		return sb.toString();
 	}
 }

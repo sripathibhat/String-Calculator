@@ -36,7 +36,7 @@ public class StringCalculatorTest {
 	
 	@Test
 	public void multipleNumbersWithCustomDelimiter() {
-		assertEquals(6, stringCalculator.add("//;\n1;2;3"));
+		assertEquals(6, stringCalculator.add("//*\n1*2*3"));
 	}
 	
 	@Test
@@ -55,22 +55,21 @@ public class StringCalculatorTest {
 	}
 
 	// Below 3 tests not working
-	/**
-	 * @Test
+	@Test
 	public void differentFormatForCustomDelimiters() {
-		assertEquals(6, "//[***]\n1***2***3");
+		assertEquals(6, stringCalculator.add("//[***]\n1***2***3"));
 	}
+	
 	
 	@Test
 	public void multipleCustomDelimiters() {
-		assertEquals(6, "//[*][%]\n1*2%3");
+		assertEquals(6, stringCalculator.add("//[*][%]\n1*2%3"));
 	}
-	
+
 	@Test
 	public void multipleCustomDelimitersWithMoreCharacters() {
-		assertEquals(6, "//[**][%%]\n1**2%%3");
+		assertEquals(6, stringCalculator.add("//[**][%%]\n1**2%%3"));
 	}
-	 */
 	
 
 }
