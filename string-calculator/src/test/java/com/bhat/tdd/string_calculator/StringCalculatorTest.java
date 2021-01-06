@@ -52,23 +52,26 @@ public class StringCalculatorTest {
 	@Test
 	public void ignoreNumbersGreaterThan1000() {
 		assertEquals(2, stringCalculator.add("2,1001"));
+		assertEquals(2999, stringCalculator.add("1000,1000,3000,999"));
 	}
 
-	// Below 3 tests not working
 	@Test
 	public void differentFormatForCustomDelimiters() {
 		assertEquals(6, stringCalculator.add("//[***]\n1***2***3"));
+		assertEquals(5, stringCalculator.add("//[;;;]\n1;;;4"));
 	}
 	
 	
 	@Test
 	public void multipleCustomDelimiters() {
 		assertEquals(6, stringCalculator.add("//[*][%]\n1*2%3"));
+		assertEquals(8, stringCalculator.add("//[/][.]\n1/2.3.2"));
 	}
 
 	@Test
 	public void multipleCustomDelimitersWithMoreCharacters() {
 		assertEquals(6, stringCalculator.add("//[**][%%]\n1**2%%3"));
+		assertEquals(10, stringCalculator.add("//[???][^^^][+++]\n1???2+++3^^^4"));
 	}
 	
 

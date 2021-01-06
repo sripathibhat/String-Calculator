@@ -98,7 +98,7 @@ public class StringCalculator {
 	
 	private String escapeMetaChars(String s) {
 		StringBuilder sb = new StringBuilder();
-		List<Character> metaChars = Arrays.asList('*', '+', '?', '^', '$');
+		List<Character> metaChars = Arrays.asList('*', '+', '?', '^', '$', '.');
 		for(int i=0; i<s.length(); i++) {
 			if(metaChars.contains(s.charAt(i))) {
 				sb.append("\\");
