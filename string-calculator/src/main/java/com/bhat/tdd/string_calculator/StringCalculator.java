@@ -17,37 +17,17 @@ public class StringCalculator {
 		
 		// Check for custom delimiters
 		if(numbers.startsWith("//")) {
-			Matcher matcher1 = Pattern.compile("//(.)\n(.*)").matcher(numbers);
-			Matcher matcher2 = Pattern.compile("//\\[(.)\\]\\[(.)\\]\n(.*)").matcher(numbers);
-			Matcher matcher3 = Pattern.compile("//\\[(.*)\\]\\[(.*)\\]\n(.*)").matcher(numbers);
-			Matcher matcher4 = Pattern.compile("//\\[(.*)\\]\n(.*)").matcher(numbers);
-			Matcher matcher5 = Pattern.compile("//(\\[.+\\])\n(.*)").matcher(numbers);
-			if (matcher1.matches()) {
-				System.out.println("Matched 1");
-				delimiter = escapeMetaChars(matcher1.group(1));
-				numbers = matcher1.group(2);
-				// System.out.println(delimiter);
+			Matcher singleDelimiterMatcher = Pattern.compile("//(.)\n(.*)").matcher(numbers);
+			Matcher multipleDelimiterMatcher = Pattern.compile("//(\\[.+\\])\n(.*)").matcher(numbers);
+			if(singleDelimiterMatcher.matches()) {
+				delimiter = escapeMetaChars(singleDelimiterMatcher.group(1));
+				numbers = singleDelimiterMatcher.group(2);
 			}
-//			} else if(matcher2.matches()){
-//				System.out.println("Matched 2");
-//				delimiter = Pattern.quote(matcher2.group(1)) + "|" + Pattern.quote(matcher2.group(2));
-//				numbers = matcher2.group(3);
-//			} else if(matcher3.matches()){
-//				System.out.println("Matched 3 " + matcher3.group(1) + " " +  matcher3.group(2));
-//				delimiter = Pattern.quote(matcher3.group(1)) + "|" + Pattern.quote(matcher3.group(2));
-//				numbers = matcher3.group(3);
-//			} else if(matcher4.matches()){
-//				System.out.println("Matched 4 " + matcher4.group(1));
-//				delimiter = Pattern.quote(matcher4.group(1));
-//				numbers = matcher4.group(2);
-//			}
-			else if(matcher5.matches()) {
-				// System.out.print("Matched 5");
-				List<String> delimiters = parseDelimiters(matcher5.group(1));
-				numbers = matcher5.group(2);
+			else if(multipleDelimiterMatcher.matches()) {
+				List<String> delimiters = parseDelimiters(multipleDelimiterMatcher.group(1));
+				numbers = multipleDelimiterMatcher.group(2);
 				delimiter = "";
 				for(int i=0; i<delimiters.size()-1; i++) {
-					// System.out.print(delimiters.get(i) + " ");
 					delimiter += delimiters.get(i) + "|";
 				}
 				delimiter += delimiters.get(delimiters.size()-1);
@@ -55,10 +35,10 @@ public class StringCalculator {
 			}
 		}
 		
-		int tokens[] = splitNumbers(delimiter, numbers);
+		int nums[] = splitNumbers(delimiter, numbers);
 		
 		// Check whether input contains any negative numbers
-		List<Integer> negativeNums = getNegatives(tokens);
+		List<Integer> negativeNums = getNegatives(nums);
 		if(negativeNums.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			for(int i=0; i<negativeNums.size()-1; i++) {
@@ -70,16 +50,11 @@ public class StringCalculator {
 		}
 		
 		// No negative numbers, so calculate sum
-		int sum = calculateSum(tokens);
+		int sum = calculateSum(nums);
 		return sum;
 	}
 
 	private int[] splitNumbers(String delimiter, String numbers) {
-		//delimiter = delimiter.replace("\\Q", "");
-		//delimiter = delimiter.replace("\\E", "");
-		//delimiter = delimiter.replace("*", "\\*");
-		System.out.println(delimiter);
-
 		String tokens[] = numbers.split(delimiter);
 		int nums[] = new int[tokens.length];
 		int i = 0;
@@ -108,7 +83,7 @@ public class StringCalculator {
 	}
 	
 	private List<String> parseDelimiters(String text) {
-		List<String> delimiters = new ArrayList();
+		List<String> delimiters = new ArrayList<String>();
 		int start = 0;
 		for(int i=0; i<text.length(); i++) {
 			if(text.charAt(i) == '[') {
