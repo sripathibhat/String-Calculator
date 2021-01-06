@@ -8,15 +8,20 @@ import java.util.regex.Pattern;
 
 public class StringCalculator {
 
+	private static final int maxNumber = 1000;
+	private static final List<Character> metaChars = Arrays.asList('*', '+', '?', '^', '$', '.');
+	private static final String defaultDelimiters = ",|\n";
+	private static final String customDelimiterIndicator = "//";
+
 	int add(String numbers) {
 		if(numbers.equals("")) {
 			return 0;
 		}
 
-		String delimiter = ",|\n";
+		String delimiter = defaultDelimiters;
 		
 		// Check for custom delimiters
-		if(numbers.startsWith("//")) {
+		if(numbers.startsWith(customDelimiterIndicator)) {
 			Matcher singleDelimiterMatcher = Pattern.compile("//(.)\n(.*)").matcher(numbers);
 			Matcher multipleDelimiterMatcher = Pattern.compile("//(\\[.+\\])\n(.*)").matcher(numbers);
 			if(singleDelimiterMatcher.matches()) {
@@ -31,7 +36,6 @@ public class StringCalculator {
 					delimiter += delimiters.get(i) + "|";
 				}
 				delimiter += delimiters.get(delimiters.size()-1);
-				
 			}
 		}
 		
@@ -67,7 +71,7 @@ public class StringCalculator {
 	private int calculateSum(int[] tokens) {
 		int sum = 0;
 		for(int i=0; i<tokens.length; i++) {
-			sum += tokens[i] > 1000 ? 0 : tokens[i];
+			sum += tokens[i] > maxNumber ? 0 : tokens[i];
 		}
 		return sum;
 	}
@@ -98,7 +102,6 @@ public class StringCalculator {
 	
 	private String escapeMetaChars(String s) {
 		StringBuilder sb = new StringBuilder();
-		List<Character> metaChars = Arrays.asList('*', '+', '?', '^', '$', '.');
 		for(int i=0; i<s.length(); i++) {
 			if(metaChars.contains(s.charAt(i))) {
 				sb.append("\\");
